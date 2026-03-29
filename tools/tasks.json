@@ -1,0 +1,464 @@
+[
+  {
+    "task_id": 1,
+    "phase": "Phase 1 \u2014 Repo foundation",
+    "title": "Create production-grade backend skeleton",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "backend structure exists and is coherent",
+      "imports are clean and runnable",
+      "no unnecessary scaffolding beyond immediate need"
+    ],
+    "notes": [
+      "This task is about structure, not feature completeness."
+    ]
+  },
+  {
+    "task_id": 2,
+    "phase": "Phase 1 \u2014 Repo foundation",
+    "title": "Set up FastAPI application entrypoint",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "application boots without errors",
+      "`GET /health` returns `200 OK`",
+      "local startup command is documented in README if needed"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 3,
+    "phase": "Phase 1 \u2014 Repo foundation",
+    "title": "Add environment and config management",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "application reads config from environment",
+      "config usage is centralized",
+      "no secrets hardcoded in source"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 4,
+    "phase": "Phase 1 \u2014 Repo foundation",
+    "title": "Add structured logging and correlation ID support",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "logs are structured and readable",
+      "each request can be traced with a correlation ID",
+      "no excessive noisy logging"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 5,
+    "phase": "Phase 2 \u2014 Persistence foundation",
+    "title": "Add database setup and persistence base",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "app can connect to PostgreSQL",
+      "schema creation/migration path is defined",
+      "DB wiring is testable and not mixed into route handlers"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 6,
+    "phase": "Phase 2 \u2014 Persistence foundation",
+    "title": "Create initial persistence models",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "trade and idempotency persistence models exist",
+      "schema supports the first submission slice",
+      "migrations/schema creation works locally"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 7,
+    "phase": "Phase 3 \u2014 First vertical slice: trade submission",
+    "title": "Add trade submission request/response contracts",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "request contract is explicit",
+      "invalid payloads return clean validation errors",
+      "response shape is stable and documented in code"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 8,
+    "phase": "Phase 3 \u2014 First vertical slice: trade submission",
+    "title": "Implement domain model for Trade",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "domain rules are explicit and testable",
+      "trade invariants are not embedded only in route handlers",
+      "code is easy to explain in interview discussion"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 9,
+    "phase": "Phase 3 \u2014 First vertical slice: trade submission",
+    "title": "Implement `POST /api/v1/trades`",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "valid request creates trade successfully",
+      "endpoint is thin and delegates business logic",
+      "API behavior matches docs for implemented scope"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 10,
+    "phase": "Phase 3 \u2014 First vertical slice: trade submission",
+    "title": "Implement idempotency key handling",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "duplicate identical submission does not create a second trade",
+      "mismatched payload with reused key returns conflict",
+      "idempotency logic is deterministic and tested"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 11,
+    "phase": "Phase 3 \u2014 First vertical slice: trade submission",
+    "title": "Add `GET /api/v1/trades/{tradeId}`",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "existing trade can be retrieved",
+      "unknown trade returns `404`",
+      "response is stable and clear"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 12,
+    "phase": "Phase 4 \u2014 Tests for first slice",
+    "title": "Add unit tests for trade validation",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "core trade rules are covered by unit tests",
+      "failing cases are explicit and readable"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 13,
+    "phase": "Phase 4 \u2014 Tests for first slice",
+    "title": "Add unit tests for idempotency logic",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "idempotency behavior is covered by focused tests",
+      "tests are not coupled to HTTP layer unnecessarily"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 14,
+    "phase": "Phase 4 \u2014 Tests for first slice",
+    "title": "Add integration test for successful trade submission",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "integration test passes locally",
+      "first vertical slice is proven end-to-end"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 15,
+    "phase": "Phase 5 \u2014 Messaging foundation",
+    "title": "Add broker wiring and local infrastructure support",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "broker can be reached in local dev setup",
+      "no business messaging logic is prematurely scattered"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 16,
+    "phase": "Phase 5 \u2014 Messaging foundation",
+    "title": "Create outbox persistence model",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "outbox can persist pending domain events",
+      "schema is simple and reliable"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 17,
+    "phase": "Phase 5 \u2014 Messaging foundation",
+    "title": "Persist `TradeAccepted` outbox event during submission",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "trade + outbox record are created together",
+      "no broker publish required yet to complete task"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 18,
+    "phase": "Phase 5 \u2014 Messaging foundation",
+    "title": "Build outbox publisher process",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "pending outbox events are published successfully",
+      "outbox records reflect dispatch state",
+      "failure behavior is safe and observable"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 19,
+    "phase": "Phase 6 \u2014 Settlement worker",
+    "title": "Create message envelope standard",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "envelope is explicit and reusable",
+      "logs and consumers can trace message lineage"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 20,
+    "phase": "Phase 6 \u2014 Settlement worker",
+    "title": "Build settlement worker skeleton",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "worker starts locally",
+      "worker receives and parses messages",
+      "worker structure is ready for settlement logic"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 21,
+    "phase": "Phase 6 \u2014 Settlement worker",
+    "title": "Implement settlement workflow state transitions",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "settlement transitions are explicit",
+      "invalid transitions are rejected safely",
+      "logic is testable outside transport layer"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 22,
+    "phase": "Phase 6 \u2014 Settlement worker",
+    "title": "Record settlement attempts",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "each processing attempt is auditable",
+      "success/failure is visible historically"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 23,
+    "phase": "Phase 7 \u2014 Retry and DLQ",
+    "title": "Implement transient vs terminal failure classification",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "classification logic exists in one clear place",
+      "worker behavior can branch correctly on failure type"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 24,
+    "phase": "Phase 7 \u2014 Retry and DLQ",
+    "title": "Implement retry policy",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "retryable failures are retried deterministically",
+      "retries are bounded",
+      "retry metadata is observable"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 25,
+    "phase": "Phase 7 \u2014 Retry and DLQ",
+    "title": "Add DLQ routing",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "poison/unrecoverable messages do not loop forever",
+      "DLQ records are diagnosable"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 26,
+    "phase": "Phase 7 \u2014 Retry and DLQ",
+    "title": "Persist DLQ diagnostics",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "DLQ diagnostics are queryable",
+      "failures can be reviewed without reading raw logs only"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 27,
+    "phase": "Phase 8 \u2014 Replay and supportability",
+    "title": "Implement DLQ replay path",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "replay is explicit, not automatic",
+      "replay activity is recorded",
+      "successful replay path can be demonstrated"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 28,
+    "phase": "Phase 8 \u2014 Replay and supportability",
+    "title": "Add audit trail for key lifecycle events",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "key lifecycle events are auditable",
+      "timeline reconstruction is possible"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 29,
+    "phase": "Phase 9 \u2014 Observability and operations",
+    "title": "Add health/readiness checks",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "local operators can quickly see system status",
+      "checks are useful and not misleading"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 30,
+    "phase": "Phase 9 \u2014 Observability and operations",
+    "title": "Add operational metrics/logging improvements",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "major operational flows are observable",
+      "logs/metrics support demo and interview discussion"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 31,
+    "phase": "Phase 10 \u2014 Testing for async and resilience",
+    "title": "Add unit tests for settlement state transitions",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "settlement transition logic is well covered"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 32,
+    "phase": "Phase 10 \u2014 Testing for async and resilience",
+    "title": "Add integration test for outbox publishing",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "outbox flow is proven in integration tests"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 33,
+    "phase": "Phase 10 \u2014 Testing for async and resilience",
+    "title": "Add integration test for worker success path",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "happy-path async flow works end-to-end"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 34,
+    "phase": "Phase 10 \u2014 Testing for async and resilience",
+    "title": "Add integration test for retry path",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "retry flow is deterministic and proven"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 35,
+    "phase": "Phase 10 \u2014 Testing for async and resilience",
+    "title": "Add integration test for DLQ path",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "DLQ path is proven end-to-end"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 36,
+    "phase": "Phase 10 \u2014 Testing for async and resilience",
+    "title": "Add integration test for replay path",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "replay scenario is demonstrated and testable"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 37,
+    "phase": "Phase 11 \u2014 Portfolio polish",
+    "title": "Add Docker Compose for full local stack",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "local stack starts reliably",
+      "project is demoable on one machine"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 38,
+    "phase": "Phase 11 \u2014 Portfolio polish",
+    "title": "Add sample seed/demo scenarios",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "recruiter/interviewer demo flow is easy to execute"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 39,
+    "phase": "Phase 11 \u2014 Portfolio polish",
+    "title": "Add architecture diagrams and final doc alignment",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "docs reflect reality",
+      "architecture is easy to explain visually"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 40,
+    "phase": "Phase 11 \u2014 Portfolio polish",
+    "title": "Add CI pipeline",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "repo has automated quality gate",
+      "core checks run consistently"
+    ],
+    "notes": []
+  },
+  {
+    "task_id": 41,
+    "phase": "Phase 11 \u2014 Portfolio polish",
+    "title": "Prepare recruiter-friendly walkthrough",
+    "status": "not_started",
+    "acceptance_criteria": [
+      "repo clearly signals senior engineering value",
+      "a reviewer can understand the project quickly"
+    ],
+    "notes": []
+  }
+]
