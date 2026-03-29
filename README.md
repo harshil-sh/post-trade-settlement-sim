@@ -96,3 +96,31 @@ The exact stack may evolve, but the current target is:
 ├── src/
 ├── tests/
 └── infra/
+## Current implementation status (Slice 1)
+
+Implemented in this slice:
+- FastAPI app skeleton using clean layering (`api`, `application`, `domain`, `infrastructure`)
+- `GET /health`
+- `POST /api/v1/trades` with request validation
+- idempotency behavior using `Idempotency-Key`
+  - same key + same payload returns original response
+  - same key + different payload returns `409`
+- PostgreSQL-ready persistence for `trades` and `idempotency_records`
+- JSON structured logging with correlation ID middleware
+- unit tests for validation + idempotency logic
+- one integration test for successful trade submission
+
+### Run locally
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .[dev]
+uvicorn app.main:app --reload
+```
+
+### Run tests
+
+```bash
+pytest
+```

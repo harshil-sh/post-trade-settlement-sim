@@ -3,20 +3,20 @@
 ## Phase 1 - Foundations
 
 - [ ] Task 1: Create repository structure for `src`, `tests`, `docs`, and `infra`
-- [ ] Task 2: Set up FastAPI application skeleton with health endpoint
-- [ ] Task 3: Add project configuration management for environment variables
-- [ ] Task 4: Set up PostgreSQL connection and migration tooling
+- [x] Task 2: Set up FastAPI application skeleton with health endpoint
+- [x] Task 3: Add project configuration management for environment variables
+- [x] Task 4: Set up PostgreSQL connection and migration tooling
 - [ ] Task 5: Create initial Docker Compose for API, worker, PostgreSQL, Redis, and broker
-- [ ] Task 6: Add structured logging with correlation ID support
+- [x] Task 6: Add structured logging with correlation ID support
 - [ ] Task 7: Create base domain models for Trade, SettlementAttempt, and IdempotencyRecord
 
 ## Phase 2 - Trade submission API
 
-- [ ] Task 8: Implement `POST /api/v1/trades`
-- [ ] Task 9: Add request validation and error contract
-- [ ] Task 10: Implement idempotency key storage and request fingerprinting
-- [ ] Task 11: Return stored response for duplicate idempotent submissions
-- [ ] Task 12: Reject same idempotency key with different payload
+- [x] Task 8: Implement `POST /api/v1/trades`
+- [x] Task 9: Add request validation and error contract
+- [x] Task 10: Implement idempotency key storage and request fingerprinting
+- [x] Task 11: Return stored response for duplicate idempotent submissions
+- [x] Task 12: Reject same idempotency key with different payload
 - [ ] Task 13: Implement `GET /api/v1/trades/{tradeId}`
 - [ ] Task 14: Implement `GET /api/v1/trades/{tradeId}/settlement`
 
@@ -47,10 +47,10 @@
 
 ## Phase 6 - Testing
 
-- [ ] Task 31: Add unit tests for trade validation rules
-- [ ] Task 32: Add unit tests for idempotency logic
+- [x] Task 31: Add unit tests for trade validation rules
+- [x] Task 32: Add unit tests for idempotency logic
 - [ ] Task 33: Add unit tests for settlement state transitions
-- [ ] Task 34: Add integration test for trade submission flow
+- [x] Task 34: Add integration test for trade submission flow
 - [ ] Task 35: Add integration test for outbox publish flow
 - [ ] Task 36: Add integration test for worker success path
 - [ ] Task 37: Add integration test for retry path
