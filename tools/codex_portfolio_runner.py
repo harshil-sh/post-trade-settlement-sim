@@ -51,6 +51,7 @@ class CodexPortfolioRunner:
         require_clean_git: bool = True,
         auto_commit: bool = True,
         auto_push: bool = False,
+        ignore_runner_state: bool = False,
         dry_run: bool = False,
     ) -> None:
         self.repo_root = repo_root.resolve()
@@ -62,6 +63,7 @@ class CodexPortfolioRunner:
         self.require_clean_git = require_clean_git
         self.auto_commit = auto_commit
         self.auto_push = auto_push
+        self.ignore_runner_state = ignore_runner_state
         self.dry_run = dry_run
 
         self.state_dir = self.repo_root / STATE_DIR_NAME
@@ -126,6 +128,12 @@ class CodexPortfolioRunner:
         for task in tasks_to_run:
             self.logger.info("=" * 100)
             self.logger.info("Starting Task %s - %s", task.task_id, task.title)
+            baseline_paths = self._current_changed_paths()
+            self.logger.info(
+                "Captured baseline dirty paths before Task %s: %d",
+                task.task_id,
+                len(baseline_paths),
+            )
 
             state["current_task_id"] = task.task_id
             state["current_task_title"] = task.title
@@ -175,7 +183,7 @@ class CodexPortfolioRunner:
             commit_sha = None
             if self.auto_commit:
                 self.logger.info("Verification passed. Preparing git commit for Task %s.", task.task_id)
-                commit_sha = self._commit_task_changes(task)
+                commit_sha = self._commit_task_changes(task, baseline_paths)
 
                 if self.auto_push:
                     self.logger.info("Pushing commit for Task %s.", task.task_id)
@@ -396,7 +404,7 @@ class CodexPortfolioRunner:
             "stderr_log": str(stderr_log),
         }
 
-    def _commit_task_changes(self, task: Task) -> str | None:
+    def _commit_task_changes(self, task: Task, baseline_paths: set[str]) -> str | None:
         if self.dry_run:
             self.logger.info("[DRY RUN] Skipping git commit.")
             return "dry-run-no-commit"
@@ -406,18 +414,28 @@ class CodexPortfolioRunner:
             self.logger.info("No git changes detected after Task %s. No commit created.", task.task_id)
             return None
 
-        self._run_cmd(["git", "add", "-A"], "git add failed")
+        current_paths = self._parse_porcelain_paths(status_before)
+        commit_paths = sorted(current_paths - baseline_paths)
+        if self.ignore_runner_state:
+            commit_paths = [p for p in commit_paths if not p.startswith(f"{STATE_DIR_NAME}/")]
 
-        status_after_add = self._git_status_porcelain()
-        if not status_after_add.strip():
-            self.logger.info("No staged changes after git add. No commit created.")
+        if not commit_paths:
+            self.logger.info(
+                "No new git paths beyond baseline for Task %s. No commit created.",
+                task.task_id,
+            )
             return None
 
+        self._run_cmd(["git", "add", "--", *commit_paths], "git add failed")
+
         commit_message = f"feat(task-{task.task_id}): {task.title}"
-        self._run_cmd(["git", "commit", "-m", commit_message], "git commit failed")
+        self._run_cmd(
+            ["git", "commit", "--only", "-m", commit_message, "--", *commit_paths],
+            "git commit failed",
+        )
 
         sha = self._run_cmd(["git", "rev-parse", "HEAD"], "git rev-parse failed", capture_output=True).strip()
-        self.logger.info("Created commit %s for Task %s.", sha, task.task_id)
+        self.logger.info("Created commit %s for Task %s (%d path(s)).", sha, task.task_id, len(commit_paths))
         return sha
 
     def _push_current_branch(self) -> None:
@@ -479,6 +497,24 @@ class CodexPortfolioRunner:
             "git status failed",
             capture_output=True,
         )
+
+    def _current_changed_paths(self) -> set[str]:
+        return self._parse_porcelain_paths(self._git_status_porcelain())
+
+    @staticmethod
+    def _parse_porcelain_paths(status_output: str) -> set[str]:
+        paths: set[str] = set()
+        for line in status_output.splitlines():
+            if not line.strip():
+                continue
+            raw_path = line[3:]
+            if " -> " in raw_path:
+                old_path, new_path = raw_path.split(" -> ", 1)
+                paths.add(old_path.strip())
+                paths.add(new_path.strip())
+            else:
+                paths.add(raw_path.strip())
+        return paths
 
     def _run_cmd(
         self,
@@ -578,6 +614,11 @@ def parse_args() -> argparse.Namespace:
         help="Push after each successful commit using normal git push.",
     )
     parser.add_argument(
+        "--ignore-runner-state",
+        action="store_true",
+        help=f"Exclude {STATE_DIR_NAME}/ changes from task commit path selection.",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Do not run Codex or git write actions.",
@@ -601,6 +642,7 @@ def main() -> int:
             require_clean_git=not args.allow_dirty_git,
             auto_commit=not args.no_commit,
             auto_push=args.push,
+            ignore_runner_state=args.ignore_runner_state,
             dry_run=args.dry_run,
         )
         return runner.run()
